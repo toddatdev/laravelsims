@@ -1,0 +1,42 @@
+/node_modules
+/public/storage
+/public/hot
+/storage/*.key
+/vendor
+.idea
+Homestead.json
+Homestead.yaml
+.env
+.DS_Store
+Thumbs.db
+*.sublime-project
+*.sublime-workspace
+.project
+/nbproject
+_ide_helper.php
+composer.phar
+error.log
+Todo.rtf
+.vagrant
+/.vagrant
+npm-debug.log
+
+# Ignore Webpack Built files
+/public/css
+/public/fonts
+/public/js/backend.js
+/public/js/frontend.js
+/public/mix.js
+
+# Ignore Docs
+docs/
+
+# Ignore Tanner's stuff in src/
+src/app.js
+src/automatic.js
+
+# Ignore archived Migrations
+database/migrations/ignore/
+
+# Ignore our docker-compose file
+docker-compose.yml

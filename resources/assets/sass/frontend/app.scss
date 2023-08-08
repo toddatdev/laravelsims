@@ -1,0 +1,42 @@
+// Bootstrap
+@import "~bootstrap/scss/bootstrap";
+
+//DataTables
+@import '~datatables.net-dt/css/jquery.dataTables.css';
+@import '~datatables.net-responsive-dt/css/responsive.dataTables.css';
+@import '~datatables.net-buttons-dt/css/buttons.dataTables.css';
+@import '~datatables.net-rowgroup-dt/css/rowGroup.dataTables.css';
+@import '~datatables.net-select-dt/css/select.dataTables.css';
+
+// Fonts
+@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700);
+
+// Variables
+//@import "variables";
+
+// font awesome
+$fa-font-path : "~@fortawesome/fontawesome-pro/webfonts";
+@import '~@fortawesome/fontawesome-pro/scss/fontawesome';
+@import '~@fortawesome/fontawesome-pro/scss/light';
+@import '~@fortawesome/fontawesome-pro/scss/regular';
+@import '~@fortawesome/fontawesome-pro/scss/solid';
+@import '~@fortawesome/fontawesome-pro/scss/duotone';
+@import '~@fortawesome/fontawesome-pro/scss/brands';
+
+// Helpers
+@import "../helpers";
+
+// Global
+@import "global";
+
+// Pages
+@import "pages/dashboard";
+
+
+// Plugins
+@import "../plugin/toastr/toastr.scss";
+@import "../plugin/sweetalert/sweetalert.scss";
+//@import "../plugin/AceDashboard/scss/ace";
+
+//Admin LTE Template (https://adminlte.io/docs/3.0/index.html)
+@import '~admin-lte/build/scss/AdminLTE';

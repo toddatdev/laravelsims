@@ -1,0 +1,25 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      # - echo Importing initial database to RDS
+      # - aws s3 cp s3://imp-seed-bucket/imp_seed_db.sql ./
+      # - docker run -v $(pwd):/tmp mysql bash -c "mysql -h $DB_HOST -u $DB_USERNAME --password=$DB_PASSWORD sims < /tmp/imp_seed_db.sql"
+      - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
+      - echo $(aws ssm get-parameter --name /docker/hubpw --with-decryption |jq .Parameter.Value -r) | docker login --username developmentsimmedical --password-stdin
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...
+      - export TAGNAME=$(git describe --tag)
+      - docker build -t $IMAGE_REPO_NAME:$TAGNAME -f ./.docker/Dockerfile .
+      - docker tag $IMAGE_REPO_NAME:$TAGNAME $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$TAGNAME
+      - docker tag $IMAGE_REPO_NAME:$TAGNAME $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:latest
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker image...
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$TAGNAME
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:latest
+      - aws ecs update-service --cluster $CLUSTER_NAME --service $SERVICE_NAME --force-new-deployment

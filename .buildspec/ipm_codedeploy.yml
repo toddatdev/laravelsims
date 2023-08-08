@@ -1,0 +1,6 @@
+version: 0.2
+
+phases:
+  build:
+    commands:
+      - aws codepipeline start-pipeline-execution --name imp-sims-pipeline

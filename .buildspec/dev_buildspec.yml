@@ -1,0 +1,24 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
+      # - echo Performing SonarQube SERVICE_NAME
+      # - docker run --rm -e SONAR_HOST_URL="https://sonarqube.simmetrics.net/" -v "$(pwd):/usr/src" sonarsource/sonar-scanner-cli sonar-scanner -Dsonar.projectKey=mZRrr4Zpm29v6cP1zkgFXIWW0R43kkXXGyDMnrim7DDwtfQbeqTjql2PtRK -Dsonar.sources=. -Dsonar.login=$SQ_TOKEN
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...          
+      - docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG -f ./.docker/Dockerfile .
+      - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+      - docker run -e DB_DATABASE=$DB_DATABASE -e DB_PORT=$DB_PORT -e DB_USERNAME=$DB_USERNAME -e DB_HOST=$DB_HOST -e DB_PASSWORD=$DB_PASSWORD $IMAGE_REPO_NAME:$IMAGE_TAG bash -c "php artisan migrate --force"
+      - echo Build completed on `date`
+      - echo Pushing the Docker image...
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+      - aws ecs update-service --cluster $CLUSTER_NAME --service $SERVICE_NAME --force-new-deployment
+  post_build:
+    commands:
+      - sleep 120
+      - ./.buildspec/csp_run.sh
